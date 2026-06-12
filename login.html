@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CheatVault — เข้าสู่ระบบ</title>
+<link rel="stylesheet" href="public/css/style.css"/>
+<style>
+body{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.auth-box{width:100%;max-width:360px;padding:0 24px}
+.auth-logo{display:flex;align-items:center;gap:8px;margin-bottom:28px}
+.auth-tabs{display:flex;gap:0;margin-bottom:22px;background:var(--bg-2);border-radius:var(--r-sm);padding:3px}
+.auth-tab{flex:1;text-align:center;padding:7px 0;font-size:13px;font-weight:500;color:var(--text-2);cursor:pointer;border-radius:6px;transition:all var(--t)}
+.auth-tab.active{background:var(--surface);color:var(--text-1);box-shadow:var(--shadow-sm)}
+.auth-title{font-size:20px;font-weight:600;letter-spacing:-0.3px;margin-bottom:4px}
+.auth-sub{font-size:13px;color:var(--text-2);margin-bottom:20px;line-height:1.5}
+.auth-fields{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+.pw-wrap{position:relative}.pw-wrap .input{padding-right:40px}
+.pw-eye{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--text-3);cursor:pointer;display:flex;align-items:center;transition:color var(--t)}.pw-eye:hover{color:var(--text-1)}
+.step-dots{display:flex;gap:5px;margin-bottom:16px}
+.step-dot{width:6px;height:6px;border-radius:50%;background:var(--border-2);transition:all 200ms}
+.step-dot.active{background:var(--accent);width:18px;border-radius:100px}
+.step-dot.done{background:var(--accent);opacity:.4}
+.pw-bar{height:3px;border-radius:100px;background:var(--bg-2);overflow:hidden;margin-top:5px}
+.pw-fill{height:100%;border-radius:100px;width:0%;transition:all 200ms}
+.pw-hint{font-size:10.5px;color:var(--text-3);margin-top:3px}
+.btn-full{width:100%;justify-content:center;padding:10px;font-size:14px}
+.btn-row{display:flex;gap:8px}
+.auth-error{background:#FEF2F2;border:1px solid #FECACA;color:#DC2626;border-radius:var(--r-sm);padding:9px 13px;font-size:12.5px;font-weight:500;display:none;margin-bottom:12px}
+[data-theme="dark"] .auth-error{background:#3B0A0A20;border-color:#7F1D1D;color:#FCA5A5}
+.auth-error.show{display:block}
+.auth-success{background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46;border-radius:var(--r-sm);padding:11px 14px;font-size:13px;display:none;margin-bottom:12px;text-align:center;line-height:1.5}
+[data-theme="dark"] .auth-success{background:#064E3B20;border-color:#065F46;color:#34D399}
+.auth-success.show{display:block}
+.info-box{background:var(--bg-2);border-radius:var(--r-sm);padding:11px 13px;font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:13px}
+.theme-btn{position:fixed;top:14px;right:14px}
+</style>
+</head>
+<body>
+<button class="btn-icon theme-btn" id="theme-toggle">
+  <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+<div class="auth-box">
+  <div class="auth-logo"><div class="brand-dot"></div><span style="font-size:15px;font-weight:600">CheatVault</span><span style="color:var(--text-3);font-size:12px;font-weight:400">· KMUTT CSE</span></div>
+  <div class="auth-tabs"><div class="auth-tab active" id="tab-login" onclick="switchTab('login')">เข้าสู่ระบบ</div><div class="auth-tab" id="tab-register" onclick="switchTab('register')">สมัครสมาชิก</div></div>
+  <div id="auth-error" class="auth-error"></div>
+  <div id="auth-success" class="auth-success"></div>
+  <div id="panel-login">
+    <h1 class="auth-title">ยินดีต้อนรับ</h1><p class="auth-sub">เข้าสู่ระบบด้วยรหัสนักศึกษา</p>
+    <div class="auth-fields">
+      <div class="input-group"><label class="input-label">รหัสนักศึกษา</label><input class="input" id="l-sid" type="text" placeholder="65090500001" inputmode="numeric" maxlength="11" autocomplete="username"/></div>
+      <div class="input-group"><label class="input-label">รหัสผ่าน</label><div class="pw-wrap"><input class="input" id="l-pw" type="password" placeholder="••••••••" autocomplete="current-password"/><span class="pw-eye" onclick="tpw('l-pw',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></span></div></div>
+    </div>
+    <button class="btn btn-primary btn-full" id="btn-login">เข้าสู่ระบบ</button>
+  </div>
+  <div id="panel-register" style="display:none">
+    <div class="step-dots" id="sdots"><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+    <h1 class="auth-title" id="reg-title">สมัครสมาชิก</h1><p class="auth-sub" id="reg-sub">กรอกข้อมูลส่วนตัว</p>
+    <div id="rs1" class="auth-fields">
+      <div class="input-group"><label class="input-label">รหัสนักศึกษา</label><input class="input" id="r-sid" type="text" placeholder="65090500001" inputmode="numeric" maxlength="11"/></div>
+      <div class="input-group"><label class="input-label">ชื่อ-นามสกุล</label><input class="input" id="r-name" type="text" placeholder="นายสมชาย ใจดี"/></div>
+      <div class="input-group"><label class="input-label">ชั้นปี</label><select class="input" id="r-year"><option value="">เลือกชั้นปี</option><option value="1">ปี 1</option><option value="2">ปี 2</option><option value="3">ปี 3</option><option value="4">ปี 4</option></select></div>
+    </div>
+    <div id="rs2" class="auth-fields" style="display:none">
+      <div class="input-group"><label class="input-label">รหัสผ่าน</label><div class="pw-wrap"><input class="input" id="r-pw" type="password" placeholder="อย่างน้อย 8 ตัวอักษร"/><span class="pw-eye" onclick="tpw('r-pw',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></span></div><div class="pw-bar"><div class="pw-fill" id="pw-fill"></div></div><div class="pw-hint" id="pw-hint"></div></div>
+      <div class="input-group"><label class="input-label">ยืนยันรหัสผ่าน</label><div class="pw-wrap"><input class="input" id="r-pw2" type="password" placeholder="พิมพ์ซ้ำ"/><span class="pw-eye" onclick="tpw('r-pw2',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></span></div></div>
+    </div>
+    <div id="rs3" style="display:none"><div class="info-box">ต้องได้รับรหัสเชิญจากรุ่นพี่ก่อนสมัครสมาชิก</div><div class="input-group" style="margin-bottom:14px"><label class="input-label">รหัสเชิญ</label><input class="input" id="r-code" type="text" placeholder="CHM-XXXX" style="letter-spacing:.12em;font-family:monospace;text-transform:uppercase"/></div></div>
+    <div class="btn-row"><button class="btn btn-ghost btn-sm" id="btn-back" style="display:none">ย้อนกลับ</button><button class="btn btn-primary btn-full" id="btn-next">ถัดไป</button></div>
+  </div>
+</div>
+<script src="public/js/config.js"></script>
+<script>
+const _t=localStorage.getItem("cv_theme")||"light";document.documentElement.setAttribute("data-theme",_t);document.querySelectorAll(".icon-moon").forEach(e=>e.style.display=_t==="dark"?"none":"block");document.querySelectorAll(".icon-sun").forEach(e=>e.style.display=_t==="dark"?"block":"none");
+document.getElementById("theme-toggle").addEventListener("click",()=>{const d=document.documentElement.getAttribute("data-theme")==="dark";const t=d?"light":"dark";document.documentElement.setAttribute("data-theme",t);localStorage.setItem("cv_theme",t);document.querySelectorAll(".icon-moon").forEach(e=>e.style.display=t==="dark"?"none":"block");document.querySelectorAll(".icon-sun").forEach(e=>e.style.display=t==="dark"?"block":"none");});
+try{const s=JSON.parse(localStorage.getItem("cv_session")||"null");if(s&&Date.now()<s.expiresAt)window.location.replace(s.role==="senior"?"/admin.html":"/dashboard.html");}catch{}
+function switchTab(tab){document.getElementById("panel-login").style.display=tab==="login"?"block":"none";document.getElementById("panel-register").style.display=tab==="register"?"block":"none";document.getElementById("tab-login").classList.toggle("active",tab==="login");document.getElementById("tab-register").classList.toggle("active",tab==="register");clearMsg();if(tab==="register"){regStep=1;updateReg();}}
+function showErr(m){const e=document.getElementById("auth-error");e.textContent=m;e.classList.add("show");}
+function showOk(m){const e=document.getElementById("auth-success");e.innerHTML=m;e.classList.add("show");}
+function clearMsg(){document.getElementById("auth-error").classList.remove("show");document.getElementById("auth-success").classList.remove("show");}
+function tpw(id,btn){const i=document.getElementById(id);const s=i.type==="password";i.type=s?"text":"password";btn.style.opacity=s?"1":".5";}
+document.getElementById("r-pw").addEventListener("input",function(){const pw=this.value;let s=0;if(pw.length>=8)s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;const cs=["#EF4444","#F59E0B","#10B981","#059669"];const ls=["อ่อนมาก","พอใช้","ดี","แข็งแกร่ง"];const f=document.getElementById("pw-fill");f.style.width=`${(s/4)*100}%`;f.style.background=cs[s-1]||"#EF4444";document.getElementById("pw-hint").textContent=pw?(ls[s-1]||""):"";});
+function getDevice(){let id=localStorage.getItem("cv_device");if(!id){id="d_"+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("cv_device",id);}return id;}
+document.getElementById("btn-login").addEventListener("click",doLogin);document.getElementById("l-pw").addEventListener("keydown",e=>e.key==="Enter"&&doLogin());document.getElementById("l-sid").addEventListener("keydown",e=>e.key==="Enter"&&doLogin());
+async function doLogin(){clearMsg();const sid=document.getElementById("l-sid").value.trim(),pw=document.getElementById("l-pw").value;const btn=document.getElementById("btn-login");btn.innerHTML='<span class="btn-spinner"></span>';btn.disabled=true;try{const res=await fetch(CONFIG.GAS_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"login",studentId:sid,password:pw,deviceId:getDevice()})});const data=await res.json();if(!data.success)throw new Error(data.message||"เข้าสู่ระบบไม่สำเร็จ");if(!data.token)throw new Error("ไม่ได้รับ token");const session={studentId:data.user.studentId,name:data.user.name,role:data.user.role,year:data.user.year||"",avatarUrl:data.user.avatarUrl||"",deviceId:getDevice(),token:data.token,createdAt:Date.now(),expiresAt:Date.now()+8*60*60*1000};localStorage.setItem("cv_session",JSON.stringify(session));window.location.replace(session.role==="senior"?"/admin.html":"/dashboard.html");}catch(e){showErr(e.message||"เกิดข้อผิดพลาด");btn.innerHTML="เข้าสู่ระบบ";btn.disabled=false;}}
+let regStep=1;
+function updateReg(){const dots=document.querySelectorAll(".step-dot");dots.forEach((d,i)=>{d.className="step-dot"+(i+1===regStep?" active":i+1<regStep?" done":"");});document.getElementById("rs1").style.display=regStep===1?"flex":"none";document.getElementById("rs2").style.display=regStep===2?"flex":"none";document.getElementById("rs3").style.display=regStep===3?"block":"none";if(document.getElementById("rs1"))document.getElementById("rs1").style.flexDirection="column";if(document.getElementById("rs2"))document.getElementById("rs2").style.flexDirection="column";document.getElementById("btn-back").style.display=regStep>1?"flex":"none";document.getElementById("btn-next").textContent=regStep===3?"สมัครสมาชิก":"ถัดไป";const titles=["กรอกข้อมูลส่วนตัว","ตั้งรหัสผ่าน","ยืนยันตัวตน"];const subs=["ข้อมูลสำหรับบัญชีของคุณ","รหัสผ่านสำหรับเข้าสู่ระบบ","ใส่รหัสเชิญจากรุ่นพี่"];document.getElementById("reg-title").textContent=titles[regStep-1];document.getElementById("reg-sub").textContent=subs[regStep-1];}
+function validateStep(s){if(s===1){const sid=document.getElementById("r-sid").value.trim(),name=document.getElementById("r-name").value.trim(),year=document.getElementById("r-year").value;if(!sid||!/^\d{8,11}$/.test(sid)){showErr("รหัสนักศึกษาไม่ถูกต้อง");return false;}if(!name){showErr("กรุณากรอกชื่อ");return false;}if(!year){showErr("กรุณาเลือกชั้นปี");return false;}}if(s===2){const pw=document.getElementById("r-pw").value,pw2=document.getElementById("r-pw2").value;if(pw.length<8){showErr("รหัสผ่านต้องมีอย่างน้อย 8 ตัว");return false;}if(pw!==pw2){showErr("รหัสผ่านไม่ตรงกัน");return false;}}if(s===3){const code=document.getElementById("r-code").value.trim();if(!code){showErr("กรุณากรอกรหัสเชิญ");return false;}}return true;}
+document.getElementById("btn-back").addEventListener("click",()=>{clearMsg();regStep--;updateReg();});
+document.getElementById("btn-next").addEventListener("click",async()=>{clearMsg();if(!validateStep(regStep))return;if(regStep<3){regStep++;updateReg();return;}const btn=document.getElementById("btn-next");btn.innerHTML='<span class="btn-spinner"></span>';btn.disabled=true;try{const res=await fetch(CONFIG.GAS_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"register",studentId:document.getElementById("r-sid").value.trim(),name:document.getElementById("r-name").value.trim(),year:document.getElementById("r-year").value,password:document.getElementById("r-pw").value,inviteCode:document.getElementById("r-code").value.trim().toUpperCase()})});const data=await res.json();if(!data.success)throw new Error(data.message||"สมัครไม่สำเร็จ");document.getElementById("panel-register").innerHTML="";showOk("✓ สมัครสมาชิกสำเร็จ!<br/><span style='font-size:12px;font-weight:400'>กำลังพาไปหน้าเข้าสู่ระบบ...</span>");setTimeout(()=>switchTab("login"),2200);}catch(e){showErr(e.message||"เกิดข้อผิดพลาด");btn.innerHTML="สมัครสมาชิก";btn.disabled=false;}});
+document.getElementById("l-sid").focus();
+</script>
+</body>
+</html>
